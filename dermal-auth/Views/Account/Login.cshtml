@@ -1,0 +1,41 @@
+﻿@using System.Collections.Generic
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Http.Authentication
+@using Microsoft.AspNetCore.Identity;
+@using dermal.auth.Data;
+@model dermal.auth.ViewModels.LoginViewModel
+@inject SignInManager<ApplicationUser> SignInManager
+
+@{
+    ViewData["Title"] = "Log in";
+}
+<div class="container login-container h-100">
+    <div class="row h-100 justify-content-center">
+        <div class="col-lg-5 col-md-7 col-sm-9 align-self-center">
+            <div class="card border-bottom-0">
+                <div class="card-body p-0">
+                    <form asp-controller="Account" asp-action="Login" asp-route-returnurl="@Model.ReturnUrl" method="post" asp- class="form-horizontal">
+                        @Html.AntiForgeryToken() 
+                        <div class="floating-container">
+                            <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128"><path d="M0 34.2l56.8 41.2c8 6.4 14 .4 14 .4L128 34.2V111H0zM0 17h127.6v7.6l-62 44.8s-2 1.6-3.6.4l-62-46z" fill="currentColor" /></svg>
+                            <input asp-for="Email" />
+                            <label>Email address</label>
+                        </div>
+                        <div class="floating-container border-bottom-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 97.292061 128"><path fill="currentColor" d="M50.063 77.03c-5.193 0-9.916 3.613-9.916 8.43 0 3.207 2.36 6.415 5.664 7.62v11.635h8.03V93.08c3.305-1.205 5.67-4.413 5.67-7.62.47-4.817-4.253-8.43-9.447-8.43zM48.646 9.63c-13.222 0-24.085 10.032-24.085 22.468v12.036c0 1.608 0 2.808.472 4.416h47.7c.475-1.608.475-2.808.475-4.416V32.096c0-12.436-10.863-22.468-24.56-22.468zm0-9.628c17.95 0 32.59 13.64 32.59 30.092V48.948C90.68 50.952 97.29 58.98 97.29 68.208v40.12c0 10.83-9.446 19.66-21.25 19.66H21.25C9.445 128.387 0 119.557 0 108.727v-40.52c0-9.228 7.082-16.852 16.057-19.26V30.092C16.057 13.64 30.697 0 48.647 0z"/></svg>
+                            <input asp-for="Password" type="password" />
+                            <label>Password</label>
+                        </div>
+                        <button type="submit" class="btn btn-default login-button">Log in</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+                <a asp-action="ForgotPassword">Forgotten password?</a>
+        </div>
+    </div>
+</div>
+

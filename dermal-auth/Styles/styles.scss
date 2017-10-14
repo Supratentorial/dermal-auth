@@ -1,0 +1,152 @@
+﻿@import "./node_modules/bootstrap/scss/bootstrap.scss";
+@import "./node_modules/material-colors/dist/colors.scss";
+
+body {
+    background-color: #EFF3F6;
+}
+
+.login-button {
+    width: 100%;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    background-color: $md-light-blue-900;
+    color: white;
+    height: 3.4em;
+    padding: 0 0px;
+    font-size: 1.1em;
+    cursor: pointer;
+
+    &:hover {
+        background-color: $md-light-blue-800;
+    }
+}
+
+$formPadding: 1px 6px;
+
+$inputTopStart: 0.8em;
+$inputTopEnd: 1.3em;
+$labelTopStart: 0.8em;
+$labelTopEnd: 0.2em;
+
+$inputLeft: 45px;
+$labelLeft: 45px;
+
+$inputHeight: 3.6em;
+
+$fontSizeForm: 1.1em;
+$fontSizeLabel: 0.9em;
+
+$labelTextColor: $md-light-blue-900;
+$placeHolderColor: $md-blue-grey-300;
+
+$labelAnimations: labelIn, labelOut;
+
+$animationTime: 0.35s;
+$ease: cubic-bezier(0.770, 0.00, 0.175, 1.000);
+
+//fade in to hide initial label animation
+.login-container {
+    opacity: 0;
+    animation: fadeIn 0.5s cubic-bezier(0.165, 0.840, 0.440, 1.000) $animationTime/2 1 normal forwards;
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+}
+
+.floating-container {
+    position: relative;
+    border-bottom: 1px solid $md-grey-300;
+    height: $inputHeight;
+
+    input {
+        display: block;
+        position: absolute;
+        left: $inputLeft;
+        width: calc(100% - 45px);
+        border: none;
+        padding: $formPadding;
+        font-size: $fontSizeForm;
+        border-radius: 0;
+        outline: none;
+        top: $inputTopStart;
+        box-sizing: border-box;
+
+        &:focus {
+            top: $inputTopEnd;
+        }
+    }
+
+    label {
+        pointer-events: none;
+        display: block;
+        position: absolute;
+        left: $labelLeft;
+        padding: $formPadding;
+        font-size: $fontSizeForm;
+        color: $placeHolderColor;
+        animation-name: nth($labelAnimations, 1);
+        animation-duration: $animationTime;
+        animation-direction: reverse;
+        animation-fill-mode: forwards;
+        animation-timing-function: $ease;
+    }
+
+    input:focus + label {
+        animation-name: nth($labelAnimations, 2);
+        animation-duration: $animationTime;
+        animation-direction: normal;
+        animation-fill-mode: forwards;
+        animation-timing-function: $ease;
+    }
+
+    &.valid {
+        label {
+            animation-name: nth($labelAnimations, 2);
+            animation-duration: $animationTime;
+            animation-direction: normal;
+            animation-fill-mode: forwards;
+            animation-timing-function: $ease
+        }
+    }
+}
+
+@each $animationName in $labelAnimations {
+    @keyframes #{$animationName} {
+        0% {
+            opacity: 1;
+            top: $labelTopStart;
+            font-size: $fontSizeForm;
+        }
+
+        50.01% {
+            opacity: 0;
+            font-size: $fontSizeLabel;
+            color: $labelTextColor;
+        }
+
+        100% {
+            font-size: $fontSizeLabel;
+            top: $labelTopEnd;
+            color: $labelTextColor;
+            opacity: 1;
+            font-weight: 500;
+        }
+    }
+}
+
+svg {
+    margin-left: 15px;
+    height: 20px;
+    width: 20px;
+    color: $md-blue-grey-200;
+    position: absolute;
+    left: 0px;
+    top: 1.2em;
+}
