@@ -77,7 +77,7 @@ namespace dermal.auth.Controllers
                 if (result.Succeeded)
                 {
                     _logger.LogInformation(1, "User logged in.");
-                    //return RedirectToLocal(returnUrl);
+                    return RedirectToLocal(returnUrl);
                 }
                 if (result.IsLockedOut)
                 {
@@ -336,9 +336,20 @@ namespace dermal.auth.Controllers
             return View();
         }
 
-
-       
         #region Helpers
+
+        private IActionResult RedirectToLocal(string returnUrl)
+        {
+            if (Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+            else
+            {
+                return RedirectToAction(nameof(Login), "Login");
+            }
+        }
+
 
         private void AddErrors(IdentityResult result)
         {
