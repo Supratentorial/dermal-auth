@@ -6,9 +6,6 @@ using Microsoft.Extensions.Configuration;
 using dermal.auth.Data;
 using Microsoft.AspNetCore.Identity;
 using System.Reflection;
-using System.Linq;
-using IdentityServer4.EntityFramework.DbContexts;
-using IdentityServer4.EntityFramework.Mappers;
 
 namespace dermal.auth
 {
@@ -33,7 +30,6 @@ namespace dermal.auth
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<DermalAuthDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("LocalDb")));
-
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<DermalAuthDbContext>()
                 .AddDefaultTokenProviders();
@@ -68,14 +64,6 @@ namespace dermal.auth
                     };
                 })
                 .AddAspNetIdentity<ApplicationUser>();
-
-            services.AddAuthentication()
-               .AddJwtBearer(jwt =>
-               {
-                   jwt.Authority = "http://localhost:5000";
-                   jwt.RequireHttpsMetadata = false;
-                   jwt.Audience = "dermal-api";
-               });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -86,7 +74,6 @@ namespace dermal.auth
                 app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
             }
-            app.UseAuthentication();
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseIdentityServer();
@@ -96,38 +83,6 @@ namespace dermal.auth
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-            InitializeDatabase(app);
-            DatabaseSeeder.Seed(app);
-        }
-
-        private void InitializeDatabase(IApplicationBuilder app)
-        {
-            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
-            {
-                serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
-                var context = serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>();
-                context.Database.Migrate();
-                if (!context.Clients.Any())
-                {
-                    foreach (var client in Config.Clients) {
-                        context.Clients.Add(client.ToEntity());
-                    }
-                }
-                if (!context.IdentityResources.Any())
-                {
-                    foreach (var resource in Config.IdentityResources) {
-                        context.IdentityResources.Add(resource.ToEntity());
-                    }
-                }
-                if (!context.ApiResources.Any())
-                {
-                    foreach (var resource in Config.ApiResources)
-                    {
-                        context.ApiResources.Add(resource.ToEntity());
-                    }
-                }
-                context.SaveChanges();
-            }
         }
     }
 

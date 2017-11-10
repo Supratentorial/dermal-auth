@@ -11,7 +11,7 @@ using System;
 namespace dermal.auth.Data.Migrations.IdentityServer.ConfigurationDb
 {
     [DbContext(typeof(ConfigurationDbContext))]
-    [Migration("20171001005933_InitialIdentityServerConfigurationDbMigration")]
+    [Migration("20171017082334_InitialIdentityServerConfigurationDbMigration")]
     partial class InitialIdentityServerConfigurationDbMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -171,7 +171,11 @@ namespace dermal.auth.Data.Migrations.IdentityServer.ConfigurationDb
 
                     b.Property<bool>("BackChannelLogoutSessionRequired");
 
-                    b.Property<string>("BackChannelLogoutUri");
+                    b.Property<string>("BackChannelLogoutUri")
+                        .HasMaxLength(2000);
+
+                    b.Property<string>("ClientClaimsPrefix")
+                        .HasMaxLength(200);
 
                     b.Property<string>("ClientId")
                         .IsRequired()
@@ -194,17 +198,18 @@ namespace dermal.auth.Data.Migrations.IdentityServer.ConfigurationDb
 
                     b.Property<bool>("FrontChannelLogoutSessionRequired");
 
-                    b.Property<string>("FrontChannelLogoutUri");
+                    b.Property<string>("FrontChannelLogoutUri")
+                        .HasMaxLength(2000);
 
                     b.Property<int>("IdentityTokenLifetime");
 
                     b.Property<bool>("IncludeJwtId");
 
-                    b.Property<string>("LogoUri");
+                    b.Property<string>("LogoUri")
+                        .HasMaxLength(2000);
 
-                    b.Property<string>("NormalizedClientId");
-
-                    b.Property<bool>("PrefixClientClaims");
+                    b.Property<string>("PairWiseSubjectSalt")
+                        .HasMaxLength(200);
 
                     b.Property<string>("ProtocolType")
                         .IsRequired()

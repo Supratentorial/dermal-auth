@@ -1,4 +1,5 @@
-﻿using IdentityServer4.Models;
+﻿using IdentityServer4;
+using IdentityServer4.Models;
 using System.Collections.Generic;
 
 namespace dermal.auth
@@ -11,12 +12,17 @@ namespace dermal.auth
                     ClientId = "dermal-spa",
                     AllowedGrantTypes = GrantTypes.Implicit,
                     AllowAccessTokensViaBrowser = true,
+                    AccessTokenType = AccessTokenType.Jwt,
                     RequireConsent = false,
                     RedirectUris = {
-                        "http://localhost:5000/callback.html"
+                        "http://localhost:5000"
                     },
                     PostLogoutRedirectUris = { "http://localhost:5000/home" },
-                    AllowedScopes = {"dermal-api"},
+                    AllowedScopes = {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        "dermal-api"
+                    },
                     AllowedCorsOrigins = new List<string>
                     {
                         "http://localhost:5000"
