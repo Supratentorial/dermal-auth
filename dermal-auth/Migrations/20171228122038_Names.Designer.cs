@@ -11,9 +11,10 @@ using System;
 namespace dermal.auth.Migrations
 {
     [DbContext(typeof(DermalAuthDbContext))]
-    partial class DermalAuthDbContextModelSnapshot : ModelSnapshot
+    [Migration("20171228122038_Names")]
+    partial class Names
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,7 +38,7 @@ namespace dermal.auth.Migrations
 
                     b.Property<string>("FamilyName");
 
-                    b.Property<string>("GivenName");
+                    b.Property<string>("GiveName");
 
                     b.Property<bool>("LockoutEnabled");
 
@@ -56,8 +57,6 @@ namespace dermal.auth.Migrations
                     b.Property<bool>("PhoneNumberConfirmed");
 
                     b.Property<string>("SecurityStamp");
-
-                    b.Property<string>("TenantId");
 
                     b.Property<bool>("TwoFactorEnabled");
 

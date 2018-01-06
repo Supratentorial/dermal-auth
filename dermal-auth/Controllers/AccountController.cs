@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
@@ -13,12 +11,11 @@ using IdentityServer4.Models;
 
 using IdentityModel;
 using IdentityServer4;
-using Microsoft.AspNetCore.Http.Authentication;
 using IdentityServer4.Extensions;
 using dermal.auth.Data;
-using IdentityServer4.Quickstart.UI;
 using dermal.auth.ViewModels;
 using dermal.auth.Models;
+using dermal.auth.Interfaces;
 
 namespace dermal.auth.Controllers
 {
@@ -31,6 +28,7 @@ namespace dermal.auth.Controllers
         private readonly IIdentityServerInteractionService _interaction;
         private readonly IClientStore _clientStore;
         private readonly IPersistedGrantService _persistedGrantService;
+        private readonly ISmsSender _smsSender;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
@@ -38,7 +36,8 @@ namespace dermal.auth.Controllers
             SignInManager<ApplicationUser> signInManager,
             ILoggerFactory loggerFactory,
             IIdentityServerInteractionService interaction,
-            IClientStore clientStore)
+            IClientStore clientStore, 
+            ISmsSender smsSender)
         {
             _userManager = userManager;
             _persistedGrantService = persistedGrantService;
@@ -46,6 +45,7 @@ namespace dermal.auth.Controllers
             _logger = loggerFactory.CreateLogger<AccountController>();
             _interaction = interaction;
             _clientStore = clientStore;
+            _smsSender = smsSender;
         }
 
         //
@@ -207,25 +207,19 @@ namespace dermal.auth.Controllers
             return View("LoggedOut", vm);
         }
 
-        //
-        // GET: /Account/Register
-        [HttpGet]
-        [AllowAnonymous]
-        public IActionResult Register(string returnUrl = null)
+        //POST: /Account/Register
+       [HttpPost]
+       [AllowAnonymous]
+        public async Task<IActionResult> Register(UserDto user)
         {
-            ViewData["ReturnUrl"] = returnUrl;
-            return View();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+            await _smsSender.SendSmsAsync("+61400939291", "Eat a horribly large dick.");
+            await _userManager.CreateAsync(user);
+            return Ok(user);
         }
-
-        //
-        // POST: /Account/Register
-        //[HttpPost]
-        //[AllowAnonymous]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
-        //{
-        
-        //}
 
         // GET: /Account/ConfirmEmail
         [HttpGet]

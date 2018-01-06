@@ -11,9 +11,10 @@ using System;
 namespace dermal.auth.Migrations
 {
     [DbContext(typeof(DermalAuthDbContext))]
-    partial class DermalAuthDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180104235150_TenantId")]
+    partial class TenantId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

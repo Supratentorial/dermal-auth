@@ -6,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using dermal.auth.Data;
 using Microsoft.AspNetCore.Identity;
 using System.Reflection;
+using dermal.auth.Interfaces;
+using dermal.auth.Services;
 
 namespace dermal.auth
 {
@@ -23,12 +25,16 @@ namespace dermal.auth
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
 
             this.env = env;
+            if (env.IsDevelopment()) {
+                builder.AddUserSecrets<Startup>();
+            }
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
+
             services.AddDbContext<DermalAuthDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("LocalDb")));
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<DermalAuthDbContext>()
@@ -64,11 +70,20 @@ namespace dermal.auth
                     };
                 })
                 .AddAspNetIdentity<ApplicationUser>();
+
+
+            services.AddTransient<IEmailSender, AuthMessager>();
+            services.AddTransient<ISmsSender, AuthMessager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseCors(builder =>
+            builder.WithOrigins(Configuration["AngularClientHost"])
+            .AllowAnyHeader()
+            .AllowAnyMethod());
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -86,7 +101,7 @@ namespace dermal.auth
         }
     }
 
-   
+
 }
 
 
