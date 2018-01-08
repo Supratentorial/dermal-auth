@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Reflection;
 using dermal.auth.Interfaces;
 using dermal.auth.Services;
+using dermal.auth.Options;
 
 namespace dermal.auth
 {
@@ -25,7 +26,8 @@ namespace dermal.auth
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
 
             this.env = env;
-            if (env.IsDevelopment()) {
+            if (env.IsDevelopment())
+            {
                 builder.AddUserSecrets<Startup>();
             }
             builder.AddEnvironmentVariables();
@@ -45,6 +47,7 @@ namespace dermal.auth
                 options.Password.RequireDigit = false;
                 options.Password.RequireUppercase = false;
                 options.Password.RequireNonAlphanumeric = false;
+                options.SignIn.RequireConfirmedEmail = true;
             });
 
             services.AddMvc();
@@ -72,8 +75,11 @@ namespace dermal.auth
                 .AddAspNetIdentity<ApplicationUser>();
 
 
-            services.AddTransient<IEmailSender, AuthMessager>();
-            services.AddTransient<ISmsSender, AuthMessager>();
+            services.AddTransient<IEmailSender, EmailSender>();
+            services.AddTransient<ISmsSender, SmsSender>();
+            services.AddTransient<IUserMapper, UserMapper>();
+
+            services.Configure<SendGridOptions>(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,5 +1,6 @@
 ﻿using dermal.auth.Interfaces;
-using Microsoft.Extensions.Configuration;
+using dermal.auth.Options;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,26 +11,21 @@ using Twilio.Types;
 
 namespace dermal.auth.Services
 {
-    public class AuthMessager : IEmailSender, ISmsSender
+    public class SmsSender : ISmsSender
     {
-        IConfiguration _config;
-        static readonly string
 
-        public AuthMessager(IConfiguration config)
-        {
-            this._config = config;
-        }
+        private readonly TwilioOptions _twilioOptions;
 
-        public Task SendEmailAsync(string email, string subject, string message)
+        public SmsSender(IOptions<TwilioOptions> options)
         {
-            
+            _twilioOptions = options.Value;
         }
 
         public async Task SendSmsAsync(string number, string message)
         {
-            var accountSid = _config["TwilioSid"];
-            var authToken = _config["TwilioAuthToken"];
-            var myNumber = _config["TwilioNumber"];
+            var accountSid = _twilioOptions.TwilioSid;
+            var authToken = _twilioOptions.TwilioAuthToken;
+            var myNumber = _twilioOptions.TwilioNumber;
 
             TwilioClient.Init(accountSid, authToken);
             var messageToSend = await MessageResource.CreateAsync(to:

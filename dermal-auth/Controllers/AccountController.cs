@@ -29,6 +29,8 @@ namespace dermal.auth.Controllers
         private readonly IClientStore _clientStore;
         private readonly IPersistedGrantService _persistedGrantService;
         private readonly ISmsSender _smsSender;
+        private readonly IEmailSender _emailSender;
+        private readonly IUserMapper _userMapper;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
@@ -37,7 +39,9 @@ namespace dermal.auth.Controllers
             ILoggerFactory loggerFactory,
             IIdentityServerInteractionService interaction,
             IClientStore clientStore, 
-            ISmsSender smsSender)
+            ISmsSender smsSender,
+            IEmailSender emailSender,
+            IUserMapper userMapper)
         {
             _userManager = userManager;
             _persistedGrantService = persistedGrantService;
@@ -46,6 +50,8 @@ namespace dermal.auth.Controllers
             _interaction = interaction;
             _clientStore = clientStore;
             _smsSender = smsSender;
+            _emailSender = emailSender;
+            _userMapper = userMapper;
         }
 
         //
@@ -210,13 +216,14 @@ namespace dermal.auth.Controllers
         //POST: /Account/Register
        [HttpPost]
        [AllowAnonymous]
-        public async Task<IActionResult> Register(UserDto user)
+        public async Task<IActionResult> Register(UserDto userDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
-            await _smsSender.SendSmsAsync("+61400939291", "Eat a horribly large dick.");
+            var user = _userMapper.WriteUser(userDto);
+            await _emailSender.SendEmailAsync(userDto.Email, "Activate Your Account", "Activate your account...bitch.");
             await _userManager.CreateAsync(user);
             return Ok(user);
         }

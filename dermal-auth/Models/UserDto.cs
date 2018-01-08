@@ -9,10 +9,8 @@ namespace dermal.auth.Models
     {
         public string Id { get; set; }
         public string Email { get; set; }
-        public string PhoneNumber { get; set; }
-        public string GivenNames { get; set; }
+        public string GivenName { get; set; }
         public string FamilyName { get; set; }
-        public string UserName { get; set; }
         public string TenantId { get; set; }
     }
 }
